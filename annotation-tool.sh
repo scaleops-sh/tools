@@ -1,5 +1,4 @@
 
-filter_namespaces=()
 
 #readonly=false
 #while [ "$#" -gt 0 ]; do
@@ -27,8 +26,6 @@ namespace=device-drivers-active
 readonly=true
 label="app.kubernetes.io/name"
 
-namespaces=$(kubectl get namespaces -o=custom-columns=NAME:.metadata.name --no-headers=true)
-
 namespace_tab_length=30
 pod_tab_length=50
 label_tab_length=50
@@ -39,20 +36,8 @@ line3=$(printf "Label \t" | tr -s '[:blank:]' '[\t*]' | expand -t $label_tab_len
 headline="$line1$line2$line3"
 echo "$headline"
 
-for namespace in $namespaces
+for namespace in $namespace
 do
-  if [ ${#filter_namespaces[@]} != 0 ]; then
-    found_namespace=false
-    for filter_namespace in "${filter_namespaces[@]}"; do
-      if [ "$filter_namespace" == "$namespace" ] ; then
-        found_namespace=true
-        break
-      fi
-    done
-    if [ "$found_namespace" == "false" ] ; then
-      continue
-    fi
-  fi
 
   pods=$(kubectl get pods -n "$namespace" -o=custom-columns=NAME:.metadata.name --no-headers=true)
   for pod in $pods
